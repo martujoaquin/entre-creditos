@@ -6,77 +6,9 @@
     </header>
 
     <div class="reviews">
-      <article class="review">
-        <div class="review-image">
-          <img src="/images/hero-cinema.jpg" alt="Imagen cinematográfica para Aftersun">
-        </div>
-
-        <div class="review-body">
-          <header class="review-header">
-            <h3>Aftersun <span>2022</span></h3>
-            <p>Dirigida por Charlotte Wells</p>
-          </header>
-
-          <p class="review-quote">“Una memoria luminosa que parece hablar bajito, incluso cuando duele.”</p>
-          <p class="fragment">“Entre recuerdos imperfectos y silencios compartidos, la película transforma unas vacaciones comunes en algo imposible de olvidar.”</p>
-
-          <footer class="review-footer">
-            <div class="review-author">
-              <span aria-hidden="true">C</span>
-              <p>Clara Ibarra</p>
-            </div>
-            <time datetime="2026-07-12">12 jul 2026</time>
-          </footer>
-        </div>
-      </article>
-
-      <article class="review">
-        <div class="review-image">
-          <img src="/images/hero-cinema.jpg" alt="Imagen cinematográfica para Perfect Days">
-        </div>
-
-        <div class="review-body">
-          <header class="review-header">
-            <h3>Perfect Days <span>2023</span></h3>
-            <p>Dirigida por Wim Wenders</p>
-          </header>
-
-          <p class="review-quote">“La rutina como una forma de atención: mirar mejor, respirar más lento.”</p>
-          <p class="fragment">“Cada pequeño gesto construye una vida completa. No sucede demasiado y, sin embargo, todo parece tener sentido.”</p>
-
-          <footer class="review-footer">
-            <div class="review-author">
-              <span aria-hidden="true">M</span>
-              <p>Mateo Ruiz</p>
-            </div>
-            <time datetime="2026-07-10">10 jul 2026</time>
-          </footer>
-        </div>
-      </article>
-
-      <article class="review">
-        <div class="review-image">
-          <img src="/images/hero-cinema.jpg" alt="Imagen cinematográfica para La ciénaga">
-        </div>
-
-        <div class="review-body">
-          <header class="review-header">
-            <h3>La ciénaga <span>2001</span></h3>
-            <p>Dirigida por Lucrecia Martel</p>
-          </header>
-
-          <p class="review-quote">“Un verano detenido, pesado y brillante, donde todo parece estar por quebrarse.”</p>
-          <p class="fragment">“El calor, los cuerpos y los sonidos convierten lo cotidiano en una tensión constante que nunca termina de explotar.”</p>
-
-          <footer class="review-footer">
-            <div class="review-author">
-              <span aria-hidden="true">J</span>
-              <p>Julia Montes</p>
-            </div>
-            <time datetime="2026-07-08">08 jul 2026</time>
-          </footer>
-        </div>
-      </article>
+      @for (review of reviews; track review.id) {
+        <app-review-card [review]="review"></app-review-card>
+      }
     </div>
   </div>
 </section>

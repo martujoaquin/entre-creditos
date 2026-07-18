@@ -112,7 +112,49 @@ body {
   line-height: 1.04;
 }
 
+.clapper-icon {
+  position: relative;
+  display: inline-block;
+  width: 1em;
+  height: 0.86em;
+  flex: 0 0 auto;
+  border: 1px solid currentColor;
+  border-radius: 0.14em;
+  opacity: 0.9;
+}
+
+.clapper-icon::before {
+  content: '';
+  position: absolute;
+  top: -0.29em;
+  left: -1px;
+  width: 1em;
+  height: 0.29em;
+  border: 1px solid currentColor;
+  border-bottom: 0;
+  border-radius: 0.14em 0.14em 0 0;
+  background: repeating-linear-gradient(135deg, currentColor 0 0.14em, transparent 0.14em 0.29em);
+}
+
+.content-divider {
+  position: relative;
+  width: min(1160px, calc(100% - 112px));
+  height: 1px;
+  margin: 0 auto;
+}
+
+.content-divider::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(74, 123, 255, 0), rgba(74, 123, 255, 0.32) 50%, rgba(74, 123, 255, 0));
+}
+
 @media (max-width: 700px) {
+  .content-divider {
+    width: calc(100% - 48px);
+  }
+
   .section-eyebrow {
     margin-bottom: 16px;
     font-size: 11px;
