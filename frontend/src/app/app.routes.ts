@@ -21,12 +21,12 @@ export const routes: Routes = [
       {
         path: 'login',
         loadComponent: () =>
-          import('./features/public/pages/login/login').then((m) => m.Login),
+          import('./features/auth/pages/login/login').then((m) => m.Login),
       },
       {
         path: 'register',
         loadComponent: () =>
-          import('./features/public/pages/register/register').then((m) => m.Register),
+          import('./features/auth/pages/register/register').then((m) => m.Register),
       },
     ],
   },

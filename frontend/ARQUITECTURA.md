@@ -328,3 +328,23 @@ Cards:
 - Evitar gradientes llamativos.
 - Mantener una estética limpia, elegante y cinematográfica.
 - Toda nueva pantalla debe sentirse parte del mismo producto.
+
+## Consistencia entre Login y Register
+
+Las pantallas de autenticación forman una única experiencia.
+
+Todo cambio visual realizado en una de ellas debe aplicarse también en la otra, salvo cuando el cambio corresponda exclusivamente al contenido del formulario.
+
+Esto incluye:
+
+- dimensiones
+- espaciados
+- tipografía
+- colores
+- botones
+- inputs
+- bordes
+- sombras
+- responsive
+
+La única diferencia entre ambas pantallas debe ser el contenido del formulario y los textos específicos.
