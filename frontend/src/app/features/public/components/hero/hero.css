@@ -9,10 +9,21 @@
   min-height: calc(100svh - 86px);
   overflow: hidden;
   padding: 74px 56px 88px;
-  border-bottom: 1px solid var(--border-subtle);
   background: var(--color-background);
   color: var(--color-text);
   isolation: isolate;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  height: 220px;
+  background: linear-gradient(rgba(5, 10, 24, 0), var(--color-background));
+  pointer-events: none;
 }
 
 .hero-cinema,
@@ -36,6 +47,8 @@
 }
 
 .hero-content {
+  position: relative;
+  z-index: 1;
   width: min(720px, 100%);
   text-align: center;
   transform: translateY(-32px);

@@ -4,72 +4,102 @@
 }
 
 .section {
-  padding: 96px 56px;
-  border-bottom: 1px solid var(--border-subtle);
+  padding: 64px 56px 108px;
   background: var(--color-background);
   color: var(--color-text);
 }
 
 .section-inner {
-  width: min(1120px, 100%);
+  width: min(1160px, 100%);
   margin: 0 auto;
-}
-
-.section-kicker {
-  margin: 0 0 14px;
-  color: var(--color-primary-hover);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
-
-h2 {
-  margin: 0;
-  font-family: var(--font-editorial);
-  font-size: clamp(42px, 6vw, 72px);
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: 1;
 }
 
 .steps {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-top: 48px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: stretch;
+  gap: 22px;
+  margin-top: 64px;
 }
 
 .step {
-  min-height: 190px;
-  padding: 28px;
-  border: 1px solid var(--border-subtle);
+  display: flex;
+  min-height: 292px;
+  flex-direction: column;
+  padding: 34px 34px 36px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: var(--radius-card);
-  background: linear-gradient(180deg, rgba(26, 34, 56, 0.86), rgba(11, 18, 36, 0.92));
+  background: var(--color-card);
 }
 
 .step span {
   display: block;
-  color: var(--color-primary);
+  color: var(--color-primary-hover);
   font-family: var(--font-editorial);
-  font-size: 34px;
+  font-size: 56px;
   font-style: italic;
+  font-weight: 400;
+  line-height: 0.95;
 }
 
 h3 {
-  margin: 52px 0 0;
+  width: 100%;
+  margin: 28px 0 0;
+  padding-bottom: 21px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--color-text);
-  font-size: 20px;
-  font-weight: 600;
-  line-height: 1.35;
+  font-family: var(--font-editorial);
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.1;
 }
 
-@media (max-width: 800px) {
+.step p {
+  margin: 20px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.65;
+}
+
+@media (max-width: 980px) {
+  .steps {
+    grid-template-columns: 1fr;
+    max-width: 560px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 700px) {
   .section {
-    padding: 76px 24px;
+    padding: 52px 24px 86px;
   }
 
   .steps {
     grid-template-columns: 1fr;
+    gap: 18px;
+    margin-top: 40px;
+  }
+
+  .step {
+    min-height: 260px;
+    padding: 30px 28px 32px;
+  }
+
+  .step span {
+    font-size: 48px;
+  }
+
+  h3 {
+    margin-top: 26px;
+    padding-bottom: 19px;
+    font-size: 34px;
+  }
+
+  .step p {
+    margin-top: 19px;
+    font-size: 15px;
   }
 }
