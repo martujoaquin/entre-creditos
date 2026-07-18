@@ -5,7 +5,6 @@
 
 .section {
   padding: 86px 56px 78px;
-  border-bottom: 1px solid var(--border-subtle);
   background: #060b1a;
   color: var(--color-text);
 }
@@ -21,6 +20,42 @@
   align-items: stretch;
   gap: 22px;
   margin-top: 46px;
+}
+
+.reviews-cta-link {
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 8px;
+  margin: 36px auto 0;
+  color: var(--color-primary);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.reviews-cta-link span {
+  transition: transform 0.2s ease;
+}
+
+.reviews-cta-link:hover {
+  color: var(--color-accent);
+}
+
+.reviews-cta-link:hover span {
+  transform: translateX(4px);
+}
+
+.reviews-cta-link:focus-visible {
+  color: var(--color-accent);
+  outline: 2px solid var(--color-primary);
+  outline-offset: 6px;
+  border-radius: var(--radius-button);
+}
+
+.reviews-cta-link:focus-visible span {
+  transform: translateX(4px);
 }
 
 @media (max-width: 900px) {
@@ -49,5 +84,9 @@
   app-review-card,
   app-review-card:last-child {
     width: 100%;
+  }
+
+  .reviews-cta-link {
+    margin-top: 32px;
   }
 }

@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ReviewCard } from './review-card/review-card';
 import { ReviewCardData } from './review-card-data';
 
 @Component({
   selector: 'app-latest-reviews',
   standalone: true,
-  imports: [ReviewCard],
+  imports: [RouterLink, ReviewCard],
   templateUrl: './latest-reviews.html',
   styleUrl: './latest-reviews.css',
 })
