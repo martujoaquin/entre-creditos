@@ -1,0 +1,19 @@
+<div class="landing-layout">
+  <nav class="landing-navbar" aria-label="Navegación principal">
+    <a class="brand" routerLink="/">
+      <img class="brand-logo" src="/images/LogoCompletoPNG.png" alt="" aria-hidden="true">
+    </a>
+
+    <div class="nav-menu" aria-label="Secciones de la landing">
+      <a class="nav-menu-link" href="#como-funciona">Cómo funciona</a>
+      <a class="nav-menu-link" href="#ultimas-resenas">Últimas reseñas</a>
+    </div>
+
+    <div class="nav-actions">
+      <a class="btn-secondary" routerLink="/login">Iniciar sesión</a>
+      <a class="btn-primary" routerLink="/register">Registrarse</a>
+    </div>
+  </nav>
+
+  <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,52 @@
+:host {
+  display: block;
+}
+
+.footer {
+  padding: 38px 56px;
+  background: #050a18;
+  color: var(--color-text-secondary);
+}
+
+.footer-inner {
+  display: flex;
+  width: min(1120px, 100%);
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.brand {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-editorial);
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.slogan,
+.project {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.project {
+  text-align: right;
+}
+
+@media (max-width: 700px) {
+  .footer {
+    padding: 34px 24px;
+  }
+
+  .footer-inner {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .project {
+    text-align: left;
+  }
+}
