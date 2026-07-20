@@ -31,6 +31,26 @@ class Usuario
         return $usuario ?: null;
     }
 
+    public function buscarPublicoPorId(int $idUsuario): ?array
+    {
+        $sql = "SELECT
+                    id_usuario,
+                    nombre_completo,
+                    email,
+                    es_admin,
+                    avatar
+                FROM usuarios
+                WHERE id_usuario = :id_usuario
+                LIMIT 1";
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->bindValue(':id_usuario', $idUsuario, PDO::PARAM_INT);
+        $consulta->execute();
+
+        $usuario = $consulta->fetch();
+
+        return $usuario ?: null;
+    }
+
     public function registrar(string $nombreCompleto, string $email, string $password): bool
     {
         $sql = "INSERT INTO usuarios (
