@@ -120,12 +120,23 @@ class AuthController
             ];
         }
 
+        $usuario = $this->usuario->buscarPublicoPorId((int) $_SESSION['id_usuario']);
+
+        if ($usuario === null) {
+            return [
+                'success' => false,
+                'message' => 'No hay una sesión activa'
+            ];
+        }
+
         return [
             'success' => true,
             'usuario' => [
-                'id_usuario' => (int) $_SESSION['id_usuario'],
-                'nombre_completo' => $_SESSION['nombre_completo'],
-                'es_admin' => (int) $_SESSION['es_admin']
+                'id_usuario' => (int) $usuario['id_usuario'],
+                'nombre_completo' => $usuario['nombre_completo'],
+                'email' => $usuario['email'],
+                'es_admin' => (int) $usuario['es_admin'],
+                'avatar' => $usuario['avatar']
             ]
         ];
     }

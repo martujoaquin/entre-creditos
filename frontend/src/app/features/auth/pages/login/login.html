@@ -4,10 +4,20 @@
   <article class="login-card">
     <h1>Iniciar sesión</h1>
 
-    <form class="login-form">
+    <form class="login-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()" novalidate>
       <label class="login-field">
         <span>Correo electrónico</span>
-        <input type="email" name="email" placeholder="tu@email.com" autocomplete="email">
+        <input
+          type="email"
+          name="email"
+          formControlName="email"
+          placeholder="tu@email.com"
+          autocomplete="email"
+          [class.is-invalid]="loginForm.controls.email.invalid && loginForm.controls.email.touched"
+        >
+        @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+          <small class="login-field-error">Ingresá un correo electrónico válido.</small>
+        }
       </label>
 
       <label class="login-field">
@@ -15,12 +25,25 @@
         <input
           type="password"
           name="password"
+          formControlName="password"
           placeholder="Ingresá tu contraseña"
           autocomplete="current-password"
+          [class.is-invalid]="
+            loginForm.controls.password.invalid && loginForm.controls.password.touched
+          "
         >
+        @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+          <small class="login-field-error">Ingresá tu contraseña.</small>
+        }
       </label>
 
-      <button class="btn-primary" type="submit">Ingresar</button>
+      @if (errorMessage) {
+        <p class="login-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <button class="btn-primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
+      </button>
     </form>
 
     <p class="login-register">

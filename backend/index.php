@@ -2,6 +2,25 @@
 
 session_start();
 
+$allowedOrigins = [
+    'http://localhost:4200',
+    'http://127.0.0.1:4200',
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowedOrigins, true)) {
+    header("Access-Control-Allow-Origin: {$origin}");
+    header('Access-Control-Allow-Credentials: true');
+    header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+    header('Access-Control-Allow-Headers: Content-Type');
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
+
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/models/Genero.php';
 require_once __DIR__ . '/models/Usuario.php';
@@ -11,7 +30,9 @@ require_once __DIR__ . '/controllers/AuthController.php';
 header('Content-Type: application/json; charset=utf-8');
 
 try {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'register') {
+    $action = $_GET['action'] ?? $_POST['action'] ?? '';
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'register') {
         $usuario = new Usuario($conexion);
         $authController = new AuthController($usuario);
 
@@ -19,7 +40,7 @@ try {
         exit;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'login') {
         $usuario = new Usuario($conexion);
         $authController = new AuthController($usuario);
 
@@ -27,7 +48,7 @@ try {
         exit;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'logout') {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && $action === 'logout') {
         $usuario = new Usuario($conexion);
         $authController = new AuthController($usuario);
 
@@ -35,7 +56,7 @@ try {
         exit;
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['action'] ?? '') === 'me') {
+    if ($_SERVER['REQUEST_METHOD'] === 'GET' && $action === 'me') {
         $usuario = new Usuario($conexion);
         $authController = new AuthController($usuario);
 
