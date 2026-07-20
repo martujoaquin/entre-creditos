@@ -64,6 +64,10 @@
         <p class="login-error" role="alert">{{ errorMessage }}</p>
       }
 
+      @if (successMessage) {
+        <p class="login-success" role="status">{{ successMessage }}</p>
+      }
+
       <button class="btn-primary" type="submit" [disabled]="isLoading">
         {{ isLoading ? 'Ingresando...' : 'Ingresar' }}
       </button>

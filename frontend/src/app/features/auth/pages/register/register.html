@@ -4,15 +4,41 @@
   <article class="login-card">
     <h1>Crear cuenta</h1>
 
-    <form class="login-form">
+    <form class="login-form" [formGroup]="registerForm" (ngSubmit)="onSubmit()" novalidate>
       <label class="login-field">
         <span>Nombre completo</span>
-        <input type="text" name="name" placeholder="Tu nombre" autocomplete="name">
+        <input
+          type="text"
+          name="nombre_completo"
+          formControlName="nombre_completo"
+          placeholder="Tu nombre"
+          autocomplete="name"
+          [class.is-invalid]="
+            registerForm.controls.nombre_completo.invalid &&
+            registerForm.controls.nombre_completo.touched
+          "
+        >
+        @if (
+          registerForm.controls.nombre_completo.hasError('required') &&
+          registerForm.controls.nombre_completo.touched
+        ) {
+          <small class="login-field-error">Ingresá tu nombre.</small>
+        }
       </label>
 
       <label class="login-field">
         <span>Correo electrónico</span>
-        <input type="email" name="email" placeholder="tunombre@email.com" autocomplete="email">
+        <input
+          type="email"
+          name="email"
+          formControlName="email"
+          placeholder="tunombre@email.com"
+          autocomplete="email"
+          [class.is-invalid]="registerForm.controls.email.invalid && registerForm.controls.email.touched"
+        >
+        @if (registerForm.controls.email.invalid && registerForm.controls.email.touched) {
+          <small class="login-field-error">Ingresá un email válido.</small>
+        }
       </label>
 
       <label class="login-field">
@@ -22,9 +48,13 @@
             #passwordInput
             [type]="showPassword ? 'text' : 'password'"
             name="password"
-            placeholder="Mínimo 8 caracteres"
+            formControlName="password"
+            placeholder="Creá tu contraseña"
             autocomplete="new-password"
             minlength="8"
+            [class.is-invalid]="
+              registerForm.controls.password.invalid && registerForm.controls.password.touched
+            "
           >
           <button
             class="password-toggle"
@@ -47,6 +77,26 @@
             }
           </button>
         </div>
+        @if (
+          registerForm.controls.password.hasError('required') &&
+          registerForm.controls.password.touched
+        ) {
+          <small class="login-field-error">Ingresá una contraseña.</small>
+        } @else if (
+          registerForm.controls.password.hasError('minlength') &&
+          registerForm.controls.password.touched
+        ) {
+          <small class="login-field-error">La contraseña debe tener al menos 8 caracteres.</small>
+        } @else if (
+          registerForm.controls.password.hasError('passwordPolicy') &&
+          registerForm.controls.password.touched
+        ) {
+          <small class="login-field-error">Debe incluir una mayúscula, un número y un símbolo.</small>
+        } @else {
+          <small class="login-field-help">
+            Mínimo 8 caracteres, con una mayúscula, un número y un símbolo.
+          </small>
+        }
       </label>
 
       <label class="login-field">
@@ -55,10 +105,16 @@
           <input
             #confirmPasswordInput
             [type]="showConfirmPassword ? 'text' : 'password'"
-            name="confirm-password"
+            name="confirm_password"
+            formControlName="confirm_password"
             placeholder="Repetí tu contraseña"
             autocomplete="new-password"
             minlength="8"
+            [class.is-invalid]="
+              (registerForm.controls.confirm_password.invalid &&
+                registerForm.controls.confirm_password.touched) ||
+              passwordsDoNotMatch
+            "
           >
           <button
             class="password-toggle"
@@ -81,9 +137,23 @@
             }
           </button>
         </div>
+        @if (
+          registerForm.controls.confirm_password.hasError('required') &&
+          registerForm.controls.confirm_password.touched
+        ) {
+          <small class="login-field-error">Confirmá tu contraseña.</small>
+        } @else if (passwordsDoNotMatch) {
+          <small class="login-field-error">Las contraseñas no coinciden.</small>
+        }
       </label>
 
-      <button class="btn-primary" type="submit">Crear cuenta</button>
+      @if (errorMessage) {
+        <p class="login-error" role="alert">{{ errorMessage }}</p>
+      }
+
+      <button class="btn-primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Creando cuenta...' : 'Crear cuenta' }}
+      </button>
     </form>
 
     <p class="login-register">

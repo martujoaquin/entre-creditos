@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 
 import { AuthService } from '../../../../core/services/auth.service';
 
@@ -15,10 +15,12 @@ export class Login {
   readonly loginForm;
   isLoading = false;
   errorMessage = '';
+  successMessage = '';
   showPassword = false;
 
   constructor(
     private readonly authService: AuthService,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
   ) {
@@ -26,6 +28,10 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+    this.successMessage =
+      this.activatedRoute.snapshot.queryParamMap.get('registro') === 'ok'
+        ? 'Cuenta creada correctamente. Ya podés iniciar sesión.'
+        : '';
   }
 
   togglePasswordVisibility(passwordInput: HTMLInputElement): void {
@@ -35,6 +41,7 @@ export class Login {
 
   onSubmit(): void {
     this.errorMessage = '';
+    this.successMessage = '';
 
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

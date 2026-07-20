@@ -129,20 +129,39 @@
 }
 
 .login-field-error,
-.login-error {
+.login-field-help,
+.login-error,
+.login-success {
   margin: 0;
-  color: #f0aaaa;
   font-family: var(--font-sans);
   font-size: 13px;
   line-height: 1.35;
 }
 
-.login-error {
+.login-field-error {
+  color: #f0aaaa;
+}
+
+.login-field-help {
+  color: var(--color-text-disabled);
+}
+
+.login-error,
+.login-success {
   padding: 11px 14px;
-  border: 1px solid rgba(240, 170, 170, 0.24);
   border-radius: var(--radius-input);
-  background: rgba(199, 95, 95, 0.12);
   text-align: left;
+}
+
+.login-error {
+  border: 1px solid rgba(240, 170, 170, 0.24);
+  background: rgba(199, 95, 95, 0.12);
+}
+
+.login-success {
+  border: 1px solid rgba(118, 201, 154, 0.24);
+  background: rgba(118, 201, 154, 0.12);
+  color: #b8e3c9;
 }
 
 .btn-primary:disabled {

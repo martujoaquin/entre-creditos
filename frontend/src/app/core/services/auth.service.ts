@@ -3,7 +3,14 @@ import { Injectable, signal } from '@angular/core';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { LoginResponse, LogoutResponse, MeResponse, SessionUser } from '../models/auth.models';
+import {
+  LoginResponse,
+  LogoutResponse,
+  MeResponse,
+  RegisterRequest,
+  RegisterResponse,
+  SessionUser,
+} from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -33,6 +40,28 @@ export class AuthService {
           return response.usuario;
         }),
         tap((usuario) => this.setCurrentUser(usuario)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  register(request: RegisterRequest): Observable<RegisterResponse> {
+    const body = new FormData();
+    body.append('action', 'register');
+    body.append('nombre_completo', request.nombre_completo);
+    body.append('email', request.email);
+    body.append('password', request.password);
+    body.append('confirm_password', request.confirm_password);
+
+    return this.http
+      .post<RegisterResponse>(`${this.apiUrl}?action=register`, body, { withCredentials: true })
+      .pipe(
+        map((response) => {
+          if (!response.success) {
+            throw new Error(response.message || 'No pudimos crear la cuenta.');
+          }
+
+          return response;
+        }),
         catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
       );
   }
