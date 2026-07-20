@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 
+import { authGuard } from './core/guards/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -32,6 +34,8 @@ export const routes: Routes = [
   },
   {
     path: 'club',
+    canActivate: [authGuard],
+    canActivateChild: [authGuard],
     loadComponent: () =>
       import('./layouts/club-layout/club-layout').then((m) => m.ClubLayout),
     children: [

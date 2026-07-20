@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../../../../core/services/auth.service';
 
@@ -8,22 +9,30 @@ import { AuthService } from '../../../../../core/services/auth.service';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
-export class Home implements OnInit {
+export class Home {
   private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
   readonly currentUser = this.authService.currentUser;
-  isCheckingSession = true;
-  sessionMessage = '';
+  isLoggingOut = false;
+  logoutErrorMessage = '';
 
-  ngOnInit(): void {
-    this.authService.me().subscribe({
+  logout(): void {
+    if (this.isLoggingOut) {
+      return;
+    }
+
+    this.logoutErrorMessage = '';
+    this.isLoggingOut = true;
+
+    this.authService.logout().subscribe({
       next: () => {
-        this.isCheckingSession = false;
-        this.sessionMessage = '';
+        this.isLoggingOut = false;
+        this.router.navigate(['/login']);
       },
       error: (message: string) => {
-        this.isCheckingSession = false;
-        this.sessionMessage = message;
+        this.isLoggingOut = false;
+        this.logoutErrorMessage = message;
       },
     });
   }

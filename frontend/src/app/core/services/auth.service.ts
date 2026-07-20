@@ -3,7 +3,7 @@ import { Injectable, signal } from '@angular/core';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { LoginResponse, MeResponse, SessionUser } from '../models/auth.models';
+import { LoginResponse, LogoutResponse, MeResponse, SessionUser } from '../models/auth.models';
 
 @Injectable({
   providedIn: 'root',
@@ -49,6 +49,25 @@ export class AuthService {
           return response.usuario;
         }),
         tap((usuario) => this.setCurrentUser(usuario)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  logout(): Observable<LogoutResponse> {
+    const body = new FormData();
+    body.append('action', 'logout');
+
+    return this.http
+      .post<LogoutResponse>(`${this.apiUrl}?action=logout`, body, { withCredentials: true })
+      .pipe(
+        map((response) => {
+          if (!response.success) {
+            throw new Error(response.message || 'No pudimos cerrar la sesión.');
+          }
+
+          return response;
+        }),
+        tap(() => this.setCurrentUser(null)),
         catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
       );
   }

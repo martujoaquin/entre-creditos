@@ -1,7 +1,18 @@
-@if (isCheckingSession) {
-  <p>Verificando sesión...</p>
-} @else if (currentUser(); as usuario) {
-  <p>Sesión activa: {{ usuario.nombre_completo }}</p>
-} @else {
-  <p>{{ sessionMessage }}</p>
+@if (currentUser(); as usuario) {
+  <section class="home-session">
+    <p>Sesión activa: {{ usuario.nombre_completo }}</p>
+
+    @if (logoutErrorMessage) {
+      <p class="home-session__error" role="alert">{{ logoutErrorMessage }}</p>
+    }
+
+    <button
+      class="home-session__logout"
+      type="button"
+      [disabled]="isLoggingOut"
+      (click)="logout()"
+    >
+      {{ isLoggingOut ? 'Cerrando sesión...' : 'Cerrar sesión' }}
+    </button>
+  </section>
 }

@@ -19,3 +19,8 @@ export interface MeResponse {
   message?: string;
   usuario?: LoginUser;
 }
+
+export interface LogoutResponse {
+  success: boolean;
+  message: string;
+}
