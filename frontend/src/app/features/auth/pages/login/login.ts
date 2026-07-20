@@ -15,6 +15,7 @@ export class Login {
   readonly loginForm;
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor(
     private readonly authService: AuthService,
@@ -25,6 +26,11 @@ export class Login {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]],
     });
+  }
+
+  togglePasswordVisibility(passwordInput: HTMLInputElement): void {
+    this.showPassword = !this.showPassword;
+    passwordInput.focus();
   }
 
   onSubmit(): void {
