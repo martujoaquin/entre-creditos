@@ -1,4 +1,8 @@
-<article class="review" [class.review--movie-detail]="isMovieDetail">
+<article
+  class="review"
+  [class.review--movie-detail]="isMovieDetail"
+  [class.review--home]="isHome"
+>
   @if (!isMovieDetail && review.movie) {
     <div class="review-image">
       <button
@@ -89,7 +93,7 @@
         <p>{{ review.author.name }}</p>
       </div>
 
-      @if (isMovieDetail && review.createdAt) {
+      @if ((isMovieDetail || isHome) && review.createdAt) {
         <time [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'dd/MM/yyyy' }}</time>
       }
     </footer>

@@ -13,7 +13,7 @@ import { DatePipe } from '@angular/common';
 
 import { Review } from '../../models/review.model';
 
-export type ReviewCardVariant = 'general' | 'movie-detail';
+export type ReviewCardVariant = 'general' | 'movie-detail' | 'home';
 
 @Component({
   selector: 'app-review-card',
@@ -64,6 +64,10 @@ export class ReviewCard implements AfterViewInit {
 
   get isMovieDetail(): boolean {
     return this.variant === 'movie-detail';
+  }
+
+  get isHome(): boolean {
+    return this.variant === 'home';
   }
 
   get showActions(): boolean {

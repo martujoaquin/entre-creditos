@@ -49,6 +49,55 @@
   color: var(--color-accent);
 }
 
+.genre-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 34px;
+}
+
+.genre-filter__chip {
+  display: inline-flex;
+  min-height: 36px;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border: 1px solid var(--border-secondary);
+  border-radius: var(--radius-button);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+
+.genre-filter__chip:hover,
+.genre-filter__chip:focus-visible {
+  border-color: var(--color-primary);
+  color: var(--color-text);
+}
+
+.genre-filter__chip:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+.genre-filter__chip--active {
+  border-color: rgba(212, 175, 55, 0.56);
+  background: rgba(212, 175, 55, 0.12);
+  color: var(--color-text);
+}
+
+.genre-filter__notice {
+  margin: 14px 0 0;
+  color: var(--color-text-disabled);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .movies-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
@@ -59,6 +108,15 @@
 @media (max-width: 700px) {
   .club-page__text {
     font-size: 16px;
+  }
+
+  .genre-filter {
+    flex-wrap: nowrap;
+    margin-right: -16px;
+    margin-left: -16px;
+    padding: 0 16px 4px;
+    overflow-x: auto;
+    scrollbar-width: thin;
   }
 
   .movies-grid {
