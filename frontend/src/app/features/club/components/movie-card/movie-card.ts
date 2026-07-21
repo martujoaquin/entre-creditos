@@ -19,4 +19,15 @@ export class MovieCard {
     event.preventDefault();
     this.router.navigate(['/club/peliculas', this.movie.id_pelicula]);
   }
+
+  onPosterError(event: Event): void {
+    const image = event.target as HTMLImageElement;
+
+    if (image.src === this.movie.defaultPosterUrl) {
+      image.style.visibility = 'hidden';
+      return;
+    }
+
+    image.src = this.movie.defaultPosterUrl;
+  }
 }

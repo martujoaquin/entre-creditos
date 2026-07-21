@@ -22,6 +22,16 @@
   background: var(--color-surface);
 }
 
+.review-image__button {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
 .review-image::after {
   content: '';
   position: absolute;
@@ -63,11 +73,20 @@
   display: flex;
   flex: 1;
   flex-direction: column;
+  min-width: 0;
   padding: 24px 28px 22px;
 }
 
 .review-header {
+  min-width: 0;
   min-height: 66px;
+}
+
+.review-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
 }
 
 h3 {
@@ -78,6 +97,21 @@ h3 {
   font-weight: 600;
   letter-spacing: 0;
   line-height: 1.08;
+}
+
+h3 button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+h3 button:hover,
+h3 button:focus-visible {
+  color: var(--color-accent);
 }
 
 h3 span {
@@ -102,18 +136,16 @@ h3 span {
 }
 
 .review-quote {
-  display: -webkit-box;
-  min-height: 78px;
+  max-width: 100%;
   margin: 16px 0 0;
-  overflow: hidden;
+  overflow-wrap: anywhere;
   color: var(--color-accent);
   font-family: var(--font-editorial);
   font-size: 20px;
   font-style: italic;
   font-weight: 500;
   line-height: 1.28;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  word-break: break-word;
 }
 
 .fragment {
@@ -200,6 +232,80 @@ h3 span {
 
 .review--movie-detail:has(.review-actions--own) {
   min-height: auto;
+}
+
+:host(.shared-review-card) {
+  height: auto;
+}
+
+:host(.shared-review-card) .review {
+  display: grid;
+  grid-template-columns: minmax(170px, 210px) minmax(0, 1fr);
+  min-height: 0;
+  height: auto;
+}
+
+:host(.shared-review-card) .review-image {
+  aspect-ratio: 2 / 3;
+  align-self: start;
+  margin: 22px 0 22px 22px;
+  border-radius: 12px;
+}
+
+:host(.shared-review-card) .review-image .rating-badge {
+  display: none;
+}
+
+:host(.shared-review-card) .review-body {
+  padding: 22px 26px 20px;
+}
+
+:host(.shared-review-card) .review-header {
+  min-height: 0;
+}
+
+:host(.shared-review-card) h3 {
+  font-size: 28px;
+}
+
+:host(.shared-review-card) .movie-rule {
+  margin-top: 12px;
+}
+
+.rating-badge--general-content {
+  display: none;
+  position: static;
+  width: fit-content;
+  margin-top: 14px;
+  background: rgba(74, 141, 255, 0.1);
+}
+
+:host(.shared-review-card) .rating-badge--general-content {
+  display: inline-flex;
+}
+
+:host(.shared-review-card) .review-quote {
+  margin-top: 14px;
+  margin-bottom: 12px;
+  font-size: 22px;
+}
+
+:host(.shared-review-card) .fragment {
+  min-height: 0;
+  margin: 0;
+  -webkit-line-clamp: 4;
+}
+
+:host(.shared-review-card) .fragment:not(.fragment--collapsed) {
+  display: block;
+  overflow: visible;
+  -webkit-line-clamp: initial;
+}
+
+:host(.shared-review-card) .review-footer {
+  gap: 16px;
+  margin-top: 18px;
+  padding-top: 14px;
 }
 
 .review--movie-detail .rating-badge {
@@ -337,6 +443,15 @@ h3 span {
 @media (max-width: 700px) {
   .review {
     min-height: auto;
+  }
+
+  :host(.shared-review-card) .review {
+    grid-template-columns: 1fr;
+  }
+
+  :host(.shared-review-card) .review-image {
+    width: min(100%, 240px);
+    margin: 20px 0 0 20px;
   }
 
   .rating-badge {

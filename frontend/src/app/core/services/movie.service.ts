@@ -11,6 +11,7 @@ import { Movie, MovieApiItem, MoviesResponse } from '../models/movie.models';
 export class MovieService {
   private readonly apiUrl = environment.apiUrl;
   private readonly backendBaseUrl = this.apiUrl.replace(/\/index\.php$/, '');
+  private readonly defaultPosterPath = 'uploads/peliculas/default-poster.png';
 
   constructor(private readonly http: HttpClient) {}
 
@@ -49,15 +50,22 @@ export class MovieService {
     return {
       ...movie,
       imageUrl: this.toImageUrl(movie.imagen),
+      defaultPosterUrl: this.toImageUrl(null),
     };
   }
 
-  private toImageUrl(imagePath: string): string {
-    if (/^https?:\/\//.test(imagePath)) {
-      return imagePath;
+  private toImageUrl(imagePath: string | null | undefined): string {
+    const normalizedImagePath = imagePath?.trim() || this.defaultPosterPath;
+    const invalidPaths = new Set(['null', 'undefined', 'uploads/peliculas/default.jpg']);
+    const path = invalidPaths.has(normalizedImagePath.toLowerCase())
+      ? this.defaultPosterPath
+      : normalizedImagePath;
+
+    if (/^https?:\/\//.test(path)) {
+      return path;
     }
 
-    const normalizedPath = imagePath.replace(/^\/+/, '');
+    const normalizedPath = path.replace(/^\/+/, '');
 
     return `${this.backendBaseUrl}/${normalizedPath}`;
   }

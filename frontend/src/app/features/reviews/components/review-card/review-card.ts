@@ -9,6 +9,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
+import { DatePipe } from '@angular/common';
 
 import { Review } from '../../models/review.model';
 
@@ -17,6 +18,7 @@ export type ReviewCardVariant = 'general' | 'movie-detail';
 @Component({
   selector: 'app-review-card',
   standalone: true,
+  imports: [DatePipe],
   templateUrl: './review-card.html',
   styleUrl: './review-card.css',
 })
@@ -26,13 +28,17 @@ export class ReviewCard implements AfterViewInit {
   @Input({ required: true }) review!: Review;
   @Input() variant: ReviewCardVariant = 'general';
   @Input() isOwnReview = false;
+  @Input() allowGeneralExpansion = false;
 
   @Output() edit = new EventEmitter<number>();
   @Output() delete = new EventEmitter<number>();
   @Output() share = new EventEmitter<number>();
+  @Output() movieSelected = new EventEmitter<number>();
 
   isExpanded = false;
   canExpand = false;
+  avatarLoadFailed = false;
+  movieImageLoadFailed = false;
 
   constructor(private readonly changeDetectorRef: ChangeDetectorRef) {}
 
@@ -44,12 +50,28 @@ export class ReviewCard implements AfterViewInit {
     return this.review.author.name.trim().charAt(0).toUpperCase();
   }
 
+  get avatarUrl(): string | null {
+    return this.avatarLoadFailed ? null : this.review.author.avatarUrl ?? null;
+  }
+
+  get movieImageUrl(): string | null {
+    if (this.movieImageLoadFailed || !this.review.movie) {
+      return null;
+    }
+
+    return this.review.movie.imageUrl;
+  }
+
   get isMovieDetail(): boolean {
     return this.variant === 'movie-detail';
   }
 
   get showActions(): boolean {
     return this.isMovieDetail;
+  }
+
+  get showExpandControl(): boolean {
+    return this.isMovieDetail || this.allowGeneralExpansion;
   }
 
   get excerptId(): string {
@@ -79,8 +101,27 @@ export class ReviewCard implements AfterViewInit {
     this.share.emit(this.review.id);
   }
 
+  onMovieSelected(): void {
+    if (this.review.movie) {
+      this.movieSelected.emit(this.review.movie.id);
+    }
+  }
+
+  onAvatarError(): void {
+    this.avatarLoadFailed = true;
+  }
+
+  onMovieImageError(): void {
+    if (!this.review.movie || this.review.movie.imageUrl === this.review.movie.defaultPosterUrl) {
+      this.movieImageLoadFailed = true;
+      return;
+    }
+
+    this.review.movie.imageUrl = this.review.movie.defaultPosterUrl ?? this.review.movie.imageUrl;
+  }
+
   private measureExcerptOverflow(): void {
-    if (!this.isMovieDetail || !this.excerptElement) {
+    if (!this.showExpandControl || !this.excerptElement) {
       return;
     }
 

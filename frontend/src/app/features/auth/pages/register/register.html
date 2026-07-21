@@ -23,6 +23,13 @@
           registerForm.controls.nombre_completo.touched
         ) {
           <small class="login-field-error">Ingresá tu nombre.</small>
+        } @else if (
+          registerForm.controls.nombre_completo.hasError('fullName') &&
+          registerForm.controls.nombre_completo.touched
+        ) {
+          <small class="login-field-error">Ingresá al menos un nombre y un apellido válidos.</small>
+        } @else {
+          <small class="login-field-help">Ingresá tu nombre y apellido.</small>
         }
       </label>
 

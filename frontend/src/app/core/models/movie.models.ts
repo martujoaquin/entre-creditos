@@ -4,7 +4,7 @@ export interface MovieApiItem {
   director: string;
   anio: number;
   sinopsis: string;
-  imagen: string;
+  imagen: string | null;
   id_genero: number;
   activo: number;
 }
@@ -17,4 +17,5 @@ export interface MoviesResponse {
 
 export interface Movie extends MovieApiItem {
   imageUrl: string;
+  defaultPosterUrl: string;
 }

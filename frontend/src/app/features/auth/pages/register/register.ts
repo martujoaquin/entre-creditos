@@ -32,7 +32,7 @@ export class Register {
   ) {
     this.registerForm = this.formBuilder.nonNullable.group(
       {
-        nombre_completo: ['', [Validators.required]],
+        nombre_completo: ['', [Validators.required, fullNameValidator()]],
         email: ['', [Validators.required, Validators.email]],
         password: ['', [Validators.required, Validators.minLength(8), passwordPolicyValidator()]],
         confirm_password: ['', [Validators.required]],
@@ -74,7 +74,12 @@ export class Register {
 
     this.isLoading = true;
 
-    this.authService.register(this.registerForm.getRawValue()).subscribe({
+    const request = this.registerForm.getRawValue();
+
+    this.authService.register({
+      ...request,
+      nombre_completo: normalizeFullName(request.nombre_completo),
+    }).subscribe({
       next: () => {
         this.isLoading = false;
         this.router.navigate(['/login'], { queryParams: { registro: 'ok' } });
@@ -85,6 +90,35 @@ export class Register {
       },
     });
   }
+}
+
+function normalizeFullName(value: string): string {
+  return value.trim().replace(/\s+/g, ' ');
+}
+
+function fullNameValidator(): ValidatorFn {
+  return (control: AbstractControl<string>): ValidationErrors | null => {
+    const value = normalizeFullName(control.value);
+
+    if (value === '') {
+      return null;
+    }
+
+    const allowedCharacters = /^[\p{L}\s'-]+$/u;
+
+    if (!allowedCharacters.test(value)) {
+      return { fullName: true };
+    }
+
+    const words = value.split(' ');
+    const hasValidWords = words.length >= 2 && words.every((word) => {
+      const letterCount = [...word].filter((char) => /\p{L}/u.test(char)).length;
+
+      return letterCount >= 2;
+    });
+
+    return hasValidWords ? null : { fullName: true };
+  };
 }
 
 function passwordPolicyValidator(): ValidatorFn {

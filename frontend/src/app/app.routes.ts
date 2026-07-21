@@ -69,6 +69,20 @@ export const routes: Routes = [
           import('./features/club/pages/mis-resenas/mis-resenas').then((m) => m.MisResenas),
       },
       {
+        path: 'resenas/nueva/:idPelicula',
+        loadComponent: () =>
+          import('./features/reviews/pages/nueva-resena/nueva-resena').then(
+            (m) => m.NuevaResena,
+          ),
+      },
+      {
+        path: 'resenas/editar/:idResena',
+        loadComponent: () =>
+          import('./features/reviews/pages/nueva-resena/nueva-resena').then(
+            (m) => m.NuevaResena,
+          ),
+      },
+      {
         path: 'compartidas',
         loadComponent: () =>
           import('./features/club/pages/compartidas/compartidas').then((m) => m.Compartidas),

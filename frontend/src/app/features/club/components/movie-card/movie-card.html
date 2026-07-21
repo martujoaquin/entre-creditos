@@ -5,7 +5,11 @@
   [attr.aria-label]="'Ver detalle de ' + movie.titulo"
 >
   <div class="movie-card__image">
-    <img [src]="movie.imageUrl" [alt]="'Imagen de ' + movie.titulo">
+    <img
+      [src]="movie.imageUrl"
+      [alt]="'Póster de ' + movie.titulo"
+      (error)="onPosterError($event)"
+    >
   </div>
 
   <div class="movie-card__body">

@@ -11,10 +11,18 @@ class AuthController
 
     public function registrar(): array
     {
-        $nombreCompleto = trim($_POST['nombre_completo'] ?? '');
+        $nombreCompleto = $this->normalizarNombreCompleto($_POST['nombre_completo'] ?? '');
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
+
+        if (!$this->nombreCompletoEsValido($nombreCompleto)) {
+            http_response_code(400);
+            return [
+                'success' => false,
+                'message' => 'Ingresá un nombre y apellido válidos.'
+            ];
+        }
 
         if ($nombreCompleto === '' || $email === '' || $password === '' || $confirmPassword === '') {
             return [
@@ -165,5 +173,33 @@ class AuthController
             && preg_match('/[A-Z]/', $password)
             && preg_match('/[0-9]/', $password)
             && preg_match('/[^A-Za-z0-9]/', $password);
+    }
+
+    private function normalizarNombreCompleto(string $nombreCompleto): string
+    {
+        return preg_replace('/\s+/u', ' ', trim($nombreCompleto)) ?? '';
+    }
+
+    private function nombreCompletoEsValido(string $nombreCompleto): bool
+    {
+        if (!preg_match("/^[\p{L}\s'-]+$/u", $nombreCompleto)) {
+            return false;
+        }
+
+        $partes = preg_split('/\s+/u', $nombreCompleto, -1, PREG_SPLIT_NO_EMPTY);
+
+        if ($partes === false || count($partes) < 2) {
+            return false;
+        }
+
+        foreach ($partes as $parte) {
+            preg_match_all('/\p{L}/u', $parte, $letras);
+
+            if (count($letras[0]) < 2) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

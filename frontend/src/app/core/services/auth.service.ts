@@ -17,6 +17,8 @@ import {
 })
 export class AuthService {
   private readonly apiUrl = environment.apiUrl;
+  private readonly backendBaseUrl = this.apiUrl.replace(/\/index\.php$/, '');
+  private readonly defaultAvatarPath = 'uploads/avatars/default-avatar.png';
   private readonly currentUserSignal = signal<SessionUser | null>(null);
 
   readonly currentUser = this.currentUserSignal.asReadonly();
@@ -37,7 +39,7 @@ export class AuthService {
             throw new Error(response.message || 'No pudimos iniciar sesión.');
           }
 
-          return response.usuario;
+          return this.toSessionUser(response.usuario);
         }),
         tap((usuario) => this.setCurrentUser(usuario)),
         catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
@@ -75,7 +77,7 @@ export class AuthService {
             throw new Error(response.message || 'No hay una sesión activa.');
           }
 
-          return response.usuario;
+          return this.toSessionUser(response.usuario);
         }),
         tap((usuario) => this.setCurrentUser(usuario)),
         catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
@@ -103,6 +105,23 @@ export class AuthService {
 
   setCurrentUser(usuario: SessionUser | null): void {
     this.currentUserSignal.set(usuario);
+  }
+
+  private toSessionUser(usuario: SessionUser): SessionUser {
+    return {
+      ...usuario,
+      avatar: this.toBackendAssetUrl(usuario.avatar),
+    };
+  }
+
+  private toBackendAssetUrl(path: string | null): string {
+    const avatarPath = path?.trim() || this.defaultAvatarPath;
+
+    if (/^https?:\/\//.test(avatarPath)) {
+      return avatarPath;
+    }
+
+    return `${this.backendBaseUrl}/${avatarPath.replace(/^\/+/, '')}`;
   }
 
   private toUserMessage(error: unknown): string {
