@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { ReviewCard } from './review-card/review-card';
-import { ReviewCardData } from './review-card-data';
+
+import { ReviewCard } from '../../../reviews/components/review-card/review-card';
+import { Review } from '../../../reviews/models/review.model';
 
 @Component({
   selector: 'app-latest-reviews',
@@ -11,7 +12,7 @@ import { ReviewCardData } from './review-card-data';
   styleUrl: './latest-reviews.css',
 })
 export class LatestReviews {
-  protected readonly reviews: ReviewCardData[] = [
+  protected readonly reviews: Review[] = [
     {
       id: 1,
       movie: {

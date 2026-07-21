@@ -28,17 +28,61 @@
     <section class="reviews-section" aria-labelledby="reviews-title">
       <p class="section-eyebrow">Conversaciones</p>
       <h2 id="reviews-title">Reseñas del Club</h2>
-      <p>Próximamente se cargarán acá las reseñas reales de esta película.</p>
+      @if (ownReview; as review) {
+        <div class="own-review-block">
+          <app-review-card
+            [review]="review"
+            variant="movie-detail"
+            [isOwnReview]="true"
+            (edit)="onEditReview($event)"
+            (delete)="onDeleteReview($event)"
+            (share)="onShareReview($event)"
+          ></app-review-card>
+        </div>
+      }
+      <div class="reviews-columns" aria-label="Reseñas de otros miembros">
+        <div class="reviews-column">
+          @for (review of leftColumnReviews; track review.id) {
+            <app-review-card
+              [review]="review"
+              variant="movie-detail"
+              (share)="onShareReview($event)"
+            ></app-review-card>
+          }
+        </div>
+
+        <div class="reviews-column">
+          @for (review of rightColumnReviews; track review.id) {
+            <app-review-card
+              [review]="review"
+              variant="movie-detail"
+              (share)="onShareReview($event)"
+            ></app-review-card>
+          }
+        </div>
+      </div>
+
+      <div class="reviews-list" aria-label="Reseñas de otros miembros">
+        @for (review of otherReviews; track review.id) {
+          <app-review-card
+            [review]="review"
+            variant="movie-detail"
+            (share)="onShareReview($event)"
+          ></app-review-card>
+        }
+      </div>
     </section>
 
-    <button
-      class="write-review-button"
-      type="button"
-      [attr.aria-label]="'Escribir una reseña de ' + movie.titulo"
-      [attr.title]="'Escribir una reseña de ' + movie.titulo"
-      [attr.data-review-route]="'/club/resenas/nueva/' + movie.id_pelicula"
-    >
-      +
-    </button>
+    @if (!hasOwnReview) {
+      <button
+        class="write-review-button"
+        type="button"
+        [attr.aria-label]="'Escribir una reseña de ' + movie.titulo"
+        [attr.title]="'Escribir una reseña de ' + movie.titulo"
+        [attr.data-review-route]="'/club/resenas/nueva/' + movie.id_pelicula"
+      >
+        +
+      </button>
+    }
   </article>
 }

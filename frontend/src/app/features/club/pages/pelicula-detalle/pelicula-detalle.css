@@ -111,12 +111,30 @@
   line-height: 1.08;
 }
 
-.reviews-section p:last-child {
-  max-width: 620px;
-  margin: 18px 0 0;
-  color: var(--color-text-secondary);
-  font-size: 16px;
-  line-height: 1.7;
+.reviews-columns {
+  display: flex;
+  align-items: start;
+  gap: 28px;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.reviews-column,
+.reviews-list {
+  min-width: 0;
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.reviews-list {
+  display: none;
+  margin-top: 24px;
+}
+
+.own-review-block {
+  margin-top: 24px;
 }
 
 .write-review-button {
@@ -169,5 +187,15 @@
     width: 68px;
     height: 68px;
     font-size: 38px;
+  }
+}
+
+@media (max-width: 860px) {
+  .reviews-columns {
+    display: none;
+  }
+
+  .reviews-list {
+    display: flex;
   }
 }
