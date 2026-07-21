@@ -1,0 +1,173 @@
+.detail-state {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.detail-state p {
+  margin: 0 0 16px;
+}
+
+.detail-back-link {
+  display: inline-flex;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.detail-back-link:hover,
+.detail-back-link:focus-visible {
+  color: var(--color-accent);
+}
+
+.movie-detail {
+  position: relative;
+  padding-bottom: 96px;
+}
+
+.movie-hero {
+  display: grid;
+  grid-template-columns: minmax(168px, 245px) minmax(0, 1fr);
+  gap: 68px;
+  align-items: start;
+  margin-top: 18px;
+}
+
+.movie-hero__poster {
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  background: var(--color-surface);
+  box-shadow: 0 22px 42px rgba(0, 0, 0, 0.24);
+}
+
+.movie-hero__poster img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+}
+
+.movie-hero__content {
+  max-width: 680px;
+}
+
+.movie-hero__meta {
+  margin: 18px 0 0;
+  color: var(--color-accent);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.movie-hero__synopsis-block {
+  margin: 18px 0 0;
+}
+
+.movie-hero__label {
+  margin: 0 0 8px;
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.movie-hero__synopsis {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 18px;
+  line-height: 1.62;
+}
+
+.reviews-section {
+  position: relative;
+  margin-top: 26px;
+  padding-top: 24px;
+}
+
+.reviews-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(74, 123, 255, 0), rgba(74, 123, 255, 0.32) 50%, rgba(74, 123, 255, 0));
+}
+
+.reviews-section h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-family: var(--font-editorial);
+  font-size: 38px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+
+.reviews-section p:last-child {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: var(--color-text-secondary);
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.write-review-button {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 8;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  background: var(--color-text);
+  color: var(--color-primary);
+  font-family: var(--font-sans);
+  font-size: 44px;
+  font-weight: 300;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.write-review-button:hover,
+.write-review-button:focus-visible {
+  background: var(--color-accent);
+  color: var(--color-background);
+  transform: scale(1.04);
+}
+
+@media (max-width: 760px) {
+  .movie-hero {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .movie-hero__poster {
+    max-width: 252px;
+  }
+
+  .movie-hero__synopsis {
+    font-size: 16px;
+  }
+
+  .write-review-button {
+    right: 20px;
+    bottom: 20px;
+    width: 68px;
+    height: 68px;
+    font-size: 38px;
+  }
+}

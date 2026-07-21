@@ -38,45 +38,45 @@ export const routes: Routes = [
   {
     path: 'club',
     canActivate: [authGuard],
-    canActivateChild: [authGuard],
     loadComponent: () =>
       import('./layouts/club-layout/club-layout').then((m) => m.ClubLayout),
     children: [
       {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'home',
+      },
+      {
         path: 'home',
         loadComponent: () =>
-          import('./features/club/home/pages/home/home').then((m) => m.Home),
+          import('./features/club/pages/home/home').then((m) => m.Home),
+      },
+      {
+        path: 'peliculas',
+        loadComponent: () =>
+          import('./features/club/pages/peliculas/peliculas').then((m) => m.Peliculas),
       },
       {
         path: 'peliculas/:id',
         loadComponent: () =>
-          import('./features/club/peliculas/pages/detalle/detalle').then((m) => m.Detalle),
+          import('./features/club/pages/pelicula-detalle/pelicula-detalle').then(
+            (m) => m.PeliculaDetalle,
+          ),
       },
       {
         path: 'mis-resenas',
         loadComponent: () =>
-          import('./features/club/mis-resenas/pages/mis-resenas/mis-resenas').then(
-            (m) => m.MisResenas,
-          ),
+          import('./features/club/pages/mis-resenas/mis-resenas').then((m) => m.MisResenas),
       },
       {
         path: 'compartidas',
         loadComponent: () =>
-          import('./features/club/compartidas/pages/compartidas/compartidas').then(
-            (m) => m.Compartidas,
-          ),
-      },
-      {
-        path: 'favoritas',
-        loadComponent: () =>
-          import('./features/club/favoritas/pages/favoritas/favoritas').then(
-            (m) => m.Favoritas,
-          ),
+          import('./features/club/pages/compartidas/compartidas').then((m) => m.Compartidas),
       },
       {
         path: 'perfil',
         loadComponent: () =>
-          import('./features/club/perfil/pages/perfil/perfil').then((m) => m.Perfil),
+          import('./features/club/pages/perfil/perfil').then((m) => m.Perfil),
       },
     ],
   },

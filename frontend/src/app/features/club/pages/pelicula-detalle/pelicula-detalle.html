@@ -1,0 +1,44 @@
+@if (isLoading) {
+  <p class="detail-state">Cargando película...</p>
+} @else if (errorMessage) {
+  <section class="detail-state" role="alert">
+    <p>{{ errorMessage }}</p>
+    <a class="detail-back-link" routerLink="/club/peliculas">Volver a películas</a>
+  </section>
+} @else if (movie) {
+  <article class="movie-detail">
+    <a class="detail-back-link" routerLink="/club/peliculas">← Volver a películas</a>
+
+    <section class="movie-hero">
+      <div class="movie-hero__poster">
+        <img [src]="movie.imageUrl" [alt]="'Imagen de ' + movie.titulo">
+      </div>
+
+      <div class="movie-hero__content">
+        <p class="section-eyebrow">Película del club</p>
+        <h1 class="section-title">{{ movie.titulo }}</h1>
+        <p class="movie-hero__meta">{{ movie.director }} · {{ movie.anio }}</p>
+        <div class="movie-hero__synopsis-block">
+          <p class="movie-hero__label">Sinopsis</p>
+          <p class="movie-hero__synopsis">{{ movie.sinopsis }}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="reviews-section" aria-labelledby="reviews-title">
+      <p class="section-eyebrow">Conversaciones</p>
+      <h2 id="reviews-title">Reseñas del Club</h2>
+      <p>Próximamente se cargarán acá las reseñas reales de esta película.</p>
+    </section>
+
+    <button
+      class="write-review-button"
+      type="button"
+      [attr.aria-label]="'Escribir una reseña de ' + movie.titulo"
+      [attr.title]="'Escribir una reseña de ' + movie.titulo"
+      [attr.data-review-route]="'/club/resenas/nueva/' + movie.id_pelicula"
+    >
+      +
+    </button>
+  </article>
+}
