@@ -397,6 +397,23 @@ try {
     }
 
     if (($_GET['resource'] ?? '') === 'resenas') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['scope'] ?? '') === 'admin') {
+            $error = RequireAdmin::verificar();
+
+            if ($error !== null) {
+                http_response_code(isset($_SESSION['id_usuario']) ? 403 : 401);
+                echo json_encode($error);
+                exit;
+            }
+
+            $resena = new Resena($conexion);
+            $pelicula = new Pelicula($conexion);
+            $controller = new ResenaController($resena, $pelicula);
+
+            echo json_encode($controller->listarAdmin());
+            exit;
+        }
+
         $error = RequireAuth::verificar();
 
         if ($error !== null) {

@@ -43,13 +43,13 @@ class PeliculaController
             ];
         }
 
-        $imagen = $this->procesarImagen($archivos['imagen'] ?? null, true);
+        $imagen = $this->procesarImagen($archivos['imagen'] ?? null, false);
 
         if ($imagen['success'] === false) {
             return $imagen;
         }
 
-        $validacion['pelicula']['imagen'] = $imagen['ruta'];
+        $validacion['pelicula']['imagen'] = $imagen['ruta'] ?? 'uploads/peliculas/default-poster.png';
 
         try {
             $creada = $this->pelicula->crear($validacion['pelicula']);
@@ -58,7 +58,7 @@ class PeliculaController
         }
 
         if (!$creada) {
-            if (is_file($imagen['ruta_absoluta'])) {
+            if (($imagen['ruta_absoluta'] ?? null) !== null && is_file($imagen['ruta_absoluta'])) {
                 unlink($imagen['ruta_absoluta']);
             }
 

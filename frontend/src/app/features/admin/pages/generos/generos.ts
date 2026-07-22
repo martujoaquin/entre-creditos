@@ -25,6 +25,7 @@ export class Generos {
   formError = '';
   deleteError = '';
   feedbackMessage = '';
+  private feedbackMessageTimeout: number | undefined;
 
   constructor(private readonly genreService: GenreService) {}
 
@@ -110,9 +111,10 @@ export class Generos {
 
     request.pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: (response) => {
-        this.feedbackMessage = response.message;
+        this.isSaving = false;
         this.closeFormModal();
         this.loadGenres();
+        this.showSuccessMessage(response.message);
       },
       error: (message: string) => {
         this.formError = message || 'No pudimos guardar el género.';
@@ -150,14 +152,34 @@ export class Generos {
       .pipe(finalize(() => (this.isDeleting = false)))
       .subscribe({
         next: (response) => {
-          this.feedbackMessage = response.message;
+          this.isDeleting = false;
           this.closeDeleteModal();
           this.loadGenres();
+          this.showSuccessMessage(response.message);
         },
         error: (message: string) => {
           this.deleteError = message || 'No pudimos eliminar el género.';
         },
       });
+  }
+
+  ngOnDestroy(): void {
+    this.clearSuccessMessageTimeout();
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.feedbackMessage = message;
+    this.clearSuccessMessageTimeout();
+    this.feedbackMessageTimeout = window.setTimeout(() => {
+      this.feedbackMessage = '';
+    }, 5000);
+  }
+
+  private clearSuccessMessageTimeout(): void {
+    if (this.feedbackMessageTimeout !== undefined) {
+      window.clearTimeout(this.feedbackMessageTimeout);
+      this.feedbackMessageTimeout = undefined;
+    }
   }
 
 }

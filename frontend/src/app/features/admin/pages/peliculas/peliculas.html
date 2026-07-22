@@ -92,7 +92,7 @@
       <button type="button" aria-label="Cerrar modal" (click)="closeFormModal()">×</button>
     </header>
 
-    <form class="admin-modal__body" (ngSubmit)="saveMovie()">
+    <form class="admin-modal__body">
       <div class="admin-form-grid">
         <label>
           <span>Título</span>
@@ -150,7 +150,12 @@
 
       <footer class="admin-modal__footer">
         <button class="admin-secondary-button" type="button" [disabled]="isSaving" (click)="closeFormModal()">Cancelar</button>
-        <button class="admin-primary-button" type="submit" [disabled]="isSaving || genres.length === 0">
+        <button
+          class="admin-primary-button"
+          type="button"
+          [disabled]="isSaving"
+          (click)="saveMovie()"
+        >
           {{ formSubmitLabel }}
         </button>
       </footer>

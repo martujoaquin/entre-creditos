@@ -7,6 +7,14 @@ import { Movie } from '../../../../core/models/movie.models';
 import { GenreService } from '../../../../core/services/genre.service';
 import { MovieService } from '../../../../core/services/movie.service';
 
+interface MovieForm {
+  titulo: string;
+  director: string;
+  anio: string | number;
+  id_genero: string | number;
+  sinopsis: string;
+}
+
 @Component({
   selector: 'app-peliculas',
   imports: [FormsModule],
@@ -19,7 +27,7 @@ export class Peliculas {
   selectedMovie: Movie | null = null;
   movieToToggle: Movie | null = null;
   posterLoadFailures = new Set<number>();
-  form = this.createEmptyForm();
+  form: MovieForm = this.createEmptyForm();
   selectedImage: File | null = null;
   imagePreviewUrl = '';
   isLoading = true;
@@ -32,6 +40,7 @@ export class Peliculas {
   formError = '';
   toggleError = '';
   feedbackMessage = '';
+  private feedbackMessageTimeout: number | undefined;
 
   constructor(
     private readonly movieService: MovieService,
@@ -166,8 +175,9 @@ export class Peliculas {
     this.imagePreviewUrl = URL.createObjectURL(file);
   }
 
-  saveMovie(): void {
-    const validationError = this.validateForm();
+  saveMovie(sinopsisValue = this.form.sinopsis): void {
+    this.form.sinopsis = sinopsisValue;
+    const validationError = this.validateForm(sinopsisValue);
 
     if (validationError) {
       this.formError = validationError;
@@ -175,11 +185,11 @@ export class Peliculas {
     }
 
     const formData = new FormData();
-    formData.append('titulo', this.form.titulo.trim());
-    formData.append('director', this.form.director.trim());
-    formData.append('anio', this.form.anio.trim());
-    formData.append('id_genero', this.form.id_genero);
-    formData.append('sinopsis', this.form.sinopsis.trim());
+    formData.append('titulo', String(this.form.titulo).trim());
+    formData.append('director', String(this.form.director).trim());
+    formData.append('anio', String(this.form.anio));
+    formData.append('id_genero', String(this.form.id_genero));
+    formData.append('sinopsis', String(sinopsisValue).trim());
 
     if (!this.isEditing) {
       formData.append('activo', '1');
@@ -198,9 +208,10 @@ export class Peliculas {
 
     request.pipe(finalize(() => (this.isSaving = false))).subscribe({
       next: (response) => {
-        this.feedbackMessage = response.message;
+        this.isSaving = false;
         this.closeFormModal();
         this.loadMovies();
+        this.showSuccessMessage(response.message);
       },
       error: (message: string) => {
         this.formError = message || 'No pudimos guardar la película.';
@@ -239,9 +250,10 @@ export class Peliculas {
       .pipe(finalize(() => (this.isToggling = false)))
       .subscribe({
         next: (response) => {
-          this.feedbackMessage = response.message;
+          this.isToggling = false;
           this.closeToggleModal();
           this.loadMovies();
+          this.showSuccessMessage(response.message);
         },
         error: (message: string) => {
           this.toggleError = message || 'No pudimos actualizar el estado.';
@@ -261,15 +273,15 @@ export class Peliculas {
     this.posterLoadFailures.add(movie.id_pelicula);
   }
 
-  private validateForm(): string {
+  private validateForm(sinopsisValue = this.form.sinopsis): string {
     const year = Number(this.form.anio);
     const currentYear = new Date().getFullYear();
 
-    if (this.form.titulo.trim() === '') {
+    if (String(this.form.titulo).trim() === '') {
       return 'El título es obligatorio.';
     }
 
-    if (this.form.director.trim() === '') {
+    if (String(this.form.director).trim() === '') {
       return 'El director es obligatorio.';
     }
 
@@ -281,12 +293,8 @@ export class Peliculas {
       return 'Seleccioná un género.';
     }
 
-    if (this.form.sinopsis.trim() === '') {
+    if (String(sinopsisValue).trim() === '') {
       return 'La sinopsis es obligatoria.';
-    }
-
-    if (!this.isEditing && !this.selectedImage) {
-      return 'La imagen es obligatoria.';
     }
 
     if (this.selectedImage && !['image/jpeg', 'image/png', 'image/webp'].includes(this.selectedImage.type)) {
@@ -296,7 +304,7 @@ export class Peliculas {
     return '';
   }
 
-  private createEmptyForm() {
+  private createEmptyForm(): MovieForm {
     return {
       titulo: '',
       director: '',
@@ -304,6 +312,25 @@ export class Peliculas {
       id_genero: '',
       sinopsis: '',
     };
+  }
+
+  ngOnDestroy(): void {
+    this.clearSuccessMessageTimeout();
+  }
+
+  private showSuccessMessage(message: string): void {
+    this.feedbackMessage = message;
+    this.clearSuccessMessageTimeout();
+    this.feedbackMessageTimeout = window.setTimeout(() => {
+      this.feedbackMessage = '';
+    }, 5000);
+  }
+
+  private clearSuccessMessageTimeout(): void {
+    if (this.feedbackMessageTimeout !== undefined) {
+      window.clearTimeout(this.feedbackMessageTimeout);
+      this.feedbackMessageTimeout = undefined;
+    }
   }
 
 }

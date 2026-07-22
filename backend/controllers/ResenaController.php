@@ -33,6 +33,21 @@ class ResenaController
         ];
     }
 
+    public function listarAdmin(): array
+    {
+        try {
+            $resenas = $this->resena->obtenerTodasAdmin();
+        } catch (Throwable $e) {
+            http_response_code(500);
+            return $this->error('No se pudieron cargar las reseñas.');
+        }
+
+        return [
+            'success' => true,
+            'resenas' => $resenas
+        ];
+    }
+
     public function obtenerPorId(array $datos, int $idUsuario, bool $esAdmin): array
     {
         $idResena = $datos['id_resena'] ?? '';
