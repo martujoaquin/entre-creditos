@@ -84,6 +84,14 @@
             }
           </button>
         </div>
+        <ul class="password-requirements" [class.password-requirements--error]="passwordHelpHasError">
+          @for (requirement of passwordRequirements; track requirement.label) {
+            <li [class.password-requirements__item--met]="requirement.met">
+              <span aria-hidden="true">{{ requirement.met ? '✓' : '✗' }}</span>
+              {{ requirement.label }}
+            </li>
+          }
+        </ul>
         @if (
           registerForm.controls.password.hasError('required') &&
           registerForm.controls.password.touched
@@ -93,16 +101,12 @@
           registerForm.controls.password.hasError('minlength') &&
           registerForm.controls.password.touched
         ) {
-          <small class="login-field-error">La contraseña debe tener al menos 8 caracteres.</small>
+          <small class="login-field-error">No cumple con los requisitos.</small>
         } @else if (
           registerForm.controls.password.hasError('passwordPolicy') &&
           registerForm.controls.password.touched
         ) {
-          <small class="login-field-error">Debe incluir una mayúscula, un número y un símbolo.</small>
-        } @else {
-          <small class="login-field-help">
-            Mínimo 8 caracteres, con una mayúscula, un número y un símbolo.
-          </small>
+          <small class="login-field-error">No cumple con los requisitos.</small>
         }
       </label>
 

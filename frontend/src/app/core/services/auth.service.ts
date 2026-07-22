@@ -4,12 +4,16 @@ import { catchError, map, Observable, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
 import {
+  ChangePasswordRequest,
+  ChangePasswordResponse,
   LoginResponse,
   LogoutResponse,
   MeResponse,
+  ProfileResponse,
   RegisterRequest,
   RegisterResponse,
   SessionUser,
+  UpdateProfileResponse,
 } from '../models/auth.models';
 
 @Injectable({
@@ -103,6 +107,73 @@ export class AuthService {
       );
   }
 
+  obtenerPerfil(): Observable<NonNullable<ProfileResponse['data']>> {
+    return this.http
+      .get<ProfileResponse>(`${this.apiUrl}?resource=perfil`, { withCredentials: true })
+      .pipe(
+        map((response) => {
+          if (!response.success || !response.data) {
+            throw new Error(response.message || 'No pudimos cargar tu perfil.');
+          }
+
+          return {
+            ...response.data,
+            usuario: this.toSessionUser(response.data.usuario),
+          };
+        }),
+        tap(({ usuario }) => this.setCurrentUser(usuario)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  actualizarPerfil(nombreCompleto: string, avatar?: File | null): Observable<SessionUser> {
+    const body = new FormData();
+    body.append('_method', 'PATCH');
+    body.append('nombre_completo', nombreCompleto);
+
+    if (avatar) {
+      body.append('avatar', avatar);
+    }
+
+    return this.http
+      .post<UpdateProfileResponse>(`${this.apiUrl}?resource=perfil`, body, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => {
+          if (!response.success || !response.usuario) {
+            throw new Error(response.message || 'No pudimos guardar los cambios.');
+          }
+
+          return this.toSessionUser(response.usuario);
+        }),
+        tap((usuario) => this.setCurrentUser(usuario)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  cambiarPassword(request: ChangePasswordRequest): Observable<ChangePasswordResponse> {
+    const body = new FormData();
+    body.append('password_actual', request.password_actual.trim());
+    body.append('password_nueva', request.password_nueva.trim());
+    body.append('confirm_password_nueva', request.confirm_password_nueva.trim());
+
+    return this.http
+      .post<ChangePasswordResponse>(`${this.apiUrl}?resource=perfil&action=cambiar_password`, body, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => {
+          if (!response.success) {
+            throw new Error(response.message || 'No pudimos actualizar la contraseña.');
+          }
+
+          return response;
+        }),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
   setCurrentUser(usuario: SessionUser | null): void {
     this.currentUserSignal.set(usuario);
   }
@@ -126,6 +197,12 @@ export class AuthService {
 
   private toUserMessage(error: unknown): string {
     if (error instanceof HttpErrorResponse) {
+      const backendMessage = error.error?.message;
+
+      if (typeof backendMessage === 'string' && backendMessage.trim() !== '') {
+        return backendMessage;
+      }
+
       return 'No pudimos conectar con el servidor. Intentá nuevamente en unos minutos.';
     }
 

@@ -95,6 +95,50 @@ try {
         exit;
     }
 
+    if (($_GET['resource'] ?? '') === 'perfil') {
+        $error = RequireAuth::verificar();
+
+        if ($error !== null) {
+            http_response_code(401);
+            echo json_encode($error);
+            exit;
+        }
+
+        $usuario = new Usuario($conexion);
+        $authController = new AuthController($usuario);
+        $metodo = $_SERVER['REQUEST_METHOD'];
+
+        if ($metodo === 'POST' && ($_POST['_method'] ?? '') === 'PATCH') {
+            $metodo = 'PATCH';
+        }
+
+        if ($metodo === 'GET') {
+            echo json_encode($authController->perfil());
+            exit;
+        }
+
+        if ($metodo === 'POST' && $action === 'cambiar_password') {
+            echo json_encode($authController->cambiarPassword(obtenerDatosRequest()));
+            exit;
+        }
+
+        if ($metodo === 'PATCH') {
+            $datos = $_SERVER['REQUEST_METHOD'] === 'POST'
+                ? $_POST
+                : obtenerDatosRequest();
+
+            echo json_encode($authController->actualizarPerfil($datos, $_FILES));
+            exit;
+        }
+
+        http_response_code(405);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Método no permitido'
+        ]);
+        exit;
+    }
+
     if ($action === 'resetDatabase') {
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             echo json_encode([

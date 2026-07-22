@@ -25,6 +25,23 @@ export class Register {
   showPassword = false;
   showConfirmPassword = false;
 
+  get passwordRequirements() {
+    const value = this.registerForm.controls.password.value.trim();
+
+    return [
+      { label: 'Mínimo 8 caracteres', met: value.length >= 8 },
+      { label: 'Al menos una mayúscula', met: /[A-Z]/.test(value) },
+      { label: 'Al menos un número', met: /[0-9]/.test(value) },
+      { label: 'Al menos un símbolo', met: /[^A-Za-z0-9]/.test(value) },
+    ];
+  }
+
+  get passwordHelpHasError(): boolean {
+    const password = this.registerForm.controls.password;
+
+    return password.value.trim() !== '' && password.invalid && (password.dirty || password.touched);
+  }
+
   constructor(
     private readonly authService: AuthService,
     private readonly formBuilder: FormBuilder,
