@@ -8,3 +8,8 @@ export interface GenresResponse {
   message?: string;
   generos?: Genre[];
 }
+
+export interface GenreMutationResponse {
+  success: boolean;
+  message: string;
+}

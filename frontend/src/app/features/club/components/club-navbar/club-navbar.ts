@@ -39,6 +39,10 @@ export class ClubNavbar {
     return this.authService.currentUser();
   }
 
+  get isAdmin(): boolean {
+    return this.currentUser?.es_admin === 1;
+  }
+
   get avatarUrl(): string | null {
     return this.avatarLoadFailed ? null : this.currentUser?.avatar ?? null;
   }

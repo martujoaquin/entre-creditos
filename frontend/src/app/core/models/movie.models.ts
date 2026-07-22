@@ -19,3 +19,8 @@ export interface Movie extends MovieApiItem {
   imageUrl: string;
   defaultPosterUrl: string;
 }
+
+export interface MovieMutationResponse {
+  success: boolean;
+  message: string;
+}

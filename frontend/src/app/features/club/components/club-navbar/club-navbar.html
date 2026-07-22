@@ -140,6 +140,16 @@
         </svg>
       </a>
 
+      @if (isAdmin) {
+        <a
+          class="club-nav-link"
+          routerLink="/admin/dashboard"
+          routerLinkActive="club-nav-link--active"
+        >
+          Administración
+        </a>
+      }
+
       <div class="club-avatar-menu">
         <button
           class="club-avatar-link"
@@ -256,6 +266,9 @@
         <a routerLink="/club/peliculas" routerLinkActive="club-drawer__link--active" (click)="closeDrawer()">Películas</a>
         <a routerLink="/club/mis-resenas" routerLinkActive="club-drawer__link--active" (click)="closeDrawer()">Mis reseñas</a>
         <a routerLink="/club/compartidas" routerLinkActive="club-drawer__link--active" (click)="closeDrawer()">Compartidas conmigo</a>
+        @if (isAdmin) {
+          <a routerLink="/admin/dashboard" routerLinkActive="club-drawer__link--active" (click)="closeDrawer()">Administración</a>
+        }
         <a routerLink="/club/perfil" routerLinkActive="club-drawer__link--active" (click)="closeDrawer()">Perfil</a>
       </nav>
 

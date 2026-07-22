@@ -35,6 +35,7 @@ require_once __DIR__ . '/controllers/ResenaController.php';
 require_once __DIR__ . '/controllers/ResenaCompartidaController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/DevelopmentController.php';
+require_once __DIR__ . '/controllers/AdminDashboardController.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -158,6 +159,30 @@ try {
         $developmentController = new DevelopmentController($conexion);
 
         echo json_encode($developmentController->resetDatabase($_POST));
+        exit;
+    }
+
+    if (($_GET['resource'] ?? '') === 'admin-dashboard') {
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            http_response_code(405);
+            echo json_encode([
+                'success' => false,
+                'message' => 'Método no permitido'
+            ]);
+            exit;
+        }
+
+        $error = RequireAdmin::verificar();
+
+        if ($error !== null) {
+            http_response_code(isset($_SESSION['id_usuario']) ? 403 : 401);
+            echo json_encode($error);
+            exit;
+        }
+
+        $controller = new AdminDashboardController($conexion);
+
+        echo json_encode($controller->resumen());
         exit;
     }
 

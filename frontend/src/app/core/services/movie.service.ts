@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { catchError, map, Observable, throwError } from 'rxjs';
 
 import { environment } from '../../../environments/environment';
-import { Movie, MovieApiItem, MoviesResponse } from '../models/movie.models';
+import { Movie, MovieApiItem, MovieMutationResponse, MoviesResponse } from '../models/movie.models';
 
 @Injectable({
   providedIn: 'root',
@@ -46,12 +46,67 @@ export class MovieService {
     );
   }
 
+  getAdminMovies(): Observable<Movie[]> {
+    return this.http
+      .get<MoviesResponse>(`${this.apiUrl}?resource=peliculas`, { withCredentials: true })
+      .pipe(
+        map((response) => {
+          if (!response.success || !response.peliculas) {
+            throw new Error(response.message || 'No pudimos cargar las películas.');
+          }
+
+          return response.peliculas.map((movie) => this.toMovie(movie));
+        }),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  createMovie(formData: FormData): Observable<MovieMutationResponse> {
+    return this.http
+      .post<MovieMutationResponse>(`${this.apiUrl}?resource=peliculas`, formData, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => this.toMutationResponse(response)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  updateMovie(idPelicula: number, formData: FormData): Observable<MovieMutationResponse> {
+    formData.append('_method', 'PATCH');
+    formData.append('id_pelicula', String(idPelicula));
+
+    return this.http
+      .post<MovieMutationResponse>(`${this.apiUrl}?resource=peliculas`, formData, {
+        withCredentials: true,
+      })
+      .pipe(
+        map((response) => this.toMutationResponse(response)),
+        catchError((error: unknown) => throwError(() => this.toUserMessage(error))),
+      );
+  }
+
+  toggleMovieStatus(idPelicula: number, activo: number): Observable<MovieMutationResponse> {
+    const formData = new FormData();
+    formData.append('activo', String(activo));
+
+    return this.updateMovie(idPelicula, formData);
+  }
+
   private toMovie(movie: MovieApiItem): Movie {
     return {
       ...movie,
       imageUrl: this.toImageUrl(movie.imagen),
       defaultPosterUrl: this.toImageUrl(null),
     };
+  }
+
+  private toMutationResponse(response: MovieMutationResponse): MovieMutationResponse {
+    if (!response.success) {
+      throw new Error(response.message || 'No pudimos guardar la película.');
+    }
+
+    return response;
   }
 
   private toImageUrl(imagePath: string | null | undefined): string {
