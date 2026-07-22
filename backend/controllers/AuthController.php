@@ -417,14 +417,14 @@ class AuthController
         return true;
     }
 
-    private function procesarAvatar(array $avatar): array
+    public static function procesarAvatar(array $avatar): array
     {
         if (($avatar['error'] ?? UPLOAD_ERR_OK) !== UPLOAD_ERR_OK) {
-            return $this->error('No se pudo guardar la imagen.');
+            return self::error('No se pudo guardar la imagen.');
         }
 
         if (($avatar['size'] ?? 0) > 2 * 1024 * 1024) {
-            return $this->error('La imagen supera el tamaño máximo permitido.');
+            return self::error('La imagen supera el tamaño máximo permitido.');
         }
 
         $finfo = new finfo(FILEINFO_MIME_TYPE);
@@ -436,7 +436,7 @@ class AuthController
         ];
 
         if (!array_key_exists($mime, $tiposPermitidos)) {
-            return $this->error('El formato de imagen no es válido.');
+            return self::error('El formato de imagen no es válido.');
         }
 
         $directorio = __DIR__ . '/../uploads/avatars/';
@@ -445,7 +445,7 @@ class AuthController
         $rutaRelativa = 'uploads/avatars/' . $nombreArchivo;
 
         if (!move_uploaded_file($avatar['tmp_name'], $rutaAbsoluta)) {
-            return $this->error('No se pudo guardar la imagen.');
+            return self::error('No se pudo guardar la imagen.');
         }
 
         return [
@@ -455,12 +455,12 @@ class AuthController
         ];
     }
 
-    private function hayArchivoNuevo(?array $archivo): bool
+    public static function hayArchivoNuevo(?array $archivo): bool
     {
         return $archivo !== null && ($archivo['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_NO_FILE;
     }
 
-    private function error(string $mensaje): array
+    private static function error(string $mensaje): array
     {
         return [
             'success' => false,

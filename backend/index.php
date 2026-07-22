@@ -33,6 +33,7 @@ require_once __DIR__ . '/controllers/GeneroController.php';
 require_once __DIR__ . '/controllers/PeliculaController.php';
 require_once __DIR__ . '/controllers/ResenaController.php';
 require_once __DIR__ . '/controllers/ResenaCompartidaController.php';
+require_once __DIR__ . '/controllers/UsuarioController.php';
 require_once __DIR__ . '/controllers/AuthController.php';
 require_once __DIR__ . '/controllers/DevelopmentController.php';
 require_once __DIR__ . '/controllers/AdminDashboardController.php';
@@ -295,6 +296,47 @@ try {
             echo json_encode($controller->actualizar($datos, $_FILES));
             exit;
         }
+    }
+
+    if (($_GET['resource'] ?? '') === 'usuarios') {
+        $error = RequireAdmin::verificar();
+
+        if ($error !== null) {
+            http_response_code(isset($_SESSION['id_usuario']) ? 403 : 401);
+            echo json_encode($error);
+            exit;
+        }
+
+        $usuario = new Usuario($conexion);
+        $controller = new UsuarioController($usuario);
+        $metodo = $_SERVER['REQUEST_METHOD'];
+
+        if ($metodo === 'POST' && ($_POST['_method'] ?? '') === 'PATCH') {
+            $metodo = 'PATCH';
+        }
+
+        if ($metodo === 'GET') {
+            echo json_encode($controller->listar());
+            exit;
+        }
+
+        if ($metodo === 'PATCH') {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $datos = $_POST;
+            } else {
+                parse_str(file_get_contents('php://input'), $datos);
+            }
+
+            echo json_encode($controller->actualizar($datos, $_FILES, (int) $_SESSION['id_usuario']));
+            exit;
+        }
+
+        http_response_code(405);
+        echo json_encode([
+            'success' => false,
+            'message' => 'Método no permitido'
+        ]);
+        exit;
     }
 
     if (($_GET['resource'] ?? '') === 'usuarios_compartir') {
