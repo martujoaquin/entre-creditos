@@ -1,6 +1,16 @@
 import { Component, HostListener, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { finalize, map, switchMap, take } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  forkJoin,
+  map,
+  of,
+  Subject,
+  switchMap,
+  takeUntil,
+} from 'rxjs';
 
 import { Movie } from '../../../../core/models/movie.models';
 import { AuthService } from '../../../../core/services/auth.service';
@@ -37,6 +47,7 @@ export class PeliculaDetalle implements OnDestroy {
   shareSuccess = '';
   shareNotification = '';
   private shareNotificationTimeout: ReturnType<typeof setTimeout> | null = null;
+  private readonly destroy$ = new Subject<void>();
   protected reviews: Review[] = [];
 
   protected get ownReview(): Review | undefined {
@@ -234,6 +245,8 @@ export class PeliculaDetalle implements OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.clearShareNotificationTimeout();
   }
 
@@ -284,27 +297,82 @@ export class PeliculaDetalle implements OnDestroy {
   }
 
   private loadDetail(): void {
-    this.isLoading = true;
-    this.errorMessage = '';
-
     this.route.paramMap
       .pipe(
-        take(1),
         map((params) => Number(params.get('id'))),
-        switchMap((id) => this.movieService.getMovieById(id)),
-        finalize(() => (this.isLoading = false)),
+        distinctUntilChanged(),
+        switchMap((id) => {
+          if (!Number.isInteger(id) || id <= 0) {
+            this.handleInvalidMovieId();
+            return of(null);
+          }
+
+          this.resetMovieState();
+
+          return forkJoin({
+            movie: this.movieService.getMovieById(id),
+            reviews: this.reviewService.getReviewsByMovie(id).pipe(
+              catchError((message: string) => {
+                console.error('Error al cargar reseñas', message);
+                this.reviewsError = 'No pudimos cargar las reseñas en este momento.';
+
+                return of([]);
+              }),
+            ),
+          }).pipe(
+            finalize(() => {
+              this.isLoading = false;
+              this.isLoadingReviews = false;
+            }),
+            catchError((message: string) => {
+              console.error('Error al cargar el detalle de película', message);
+              this.movie = null;
+              this.reviews = [];
+              this.errorMessage = message || 'No pudimos cargar la película. Intentá nuevamente.';
+
+              return of(null);
+            }),
+          );
+        }),
+        takeUntil(this.destroy$),
       )
-      .subscribe({
-        next: (movie) => {
-          this.movie = movie;
-          this.loadReviews(movie.id_pelicula);
-        },
-        error: (message: string) => {
-          console.error('Error al cargar el detalle de película', message);
-          this.movie = null;
-          this.errorMessage = message || 'No pudimos cargar la película. Intentá nuevamente.';
-        },
+      .subscribe((detail) => {
+        if (!detail) {
+          return;
+        }
+
+        this.movie = detail.movie;
+        this.reviews = detail.reviews;
       });
+  }
+
+  private resetMovieState(): void {
+    this.movie = null;
+    this.reviews = [];
+    this.isLoading = true;
+    this.isLoadingReviews = true;
+    this.errorMessage = '';
+    this.reviewsError = '';
+    this.reviewIdToDelete = null;
+    this.isDeleteModalOpen = false;
+    this.isDeletingReview = false;
+    this.deleteReviewError = '';
+    this.reviewIdToShare = null;
+    this.isShareModalOpen = false;
+    this.isSharingReview = false;
+    this.selectedShareUserIds = [];
+    this.shareSearchTerm = '';
+    this.shareError = '';
+    this.shareSuccess = '';
+    this.shareNotification = '';
+    this.clearShareNotificationTimeout();
+  }
+
+  private handleInvalidMovieId(): void {
+    this.resetMovieState();
+    this.isLoading = false;
+    this.isLoadingReviews = false;
+    this.errorMessage = 'La película no está disponible.';
   }
 
   private loadReviews(movieId: number): void {

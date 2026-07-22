@@ -43,7 +43,8 @@
     </div>
 
     <div class="club-nav-tools">
-      <form class="club-search" role="search" (submit)="$event.preventDefault()">
+      <form class="club-search" role="search" (submit)="onSearchEnter($event)">
+        <label class="club-search__label" for="club-search-desktop">Buscar películas</label>
         <svg
           class="club-search__icon"
           viewBox="0 0 24 24"
@@ -60,11 +61,52 @@
           />
         </svg>
         <input
+          id="club-search-desktop"
           class="club-search__input"
           type="search"
-          placeholder="Buscar películas"
+          placeholder="Buscar películas…"
           aria-label="Buscar películas"
+          autocomplete="off"
+          [value]="searchTerm"
+          [attr.aria-expanded]="isSearchOpen"
+          aria-controls="club-search-results-desktop"
+          (input)="onSearchInput($event)"
+          (focus)="onSearchFocus()"
+          (keydown)="onSearchKeydown($event)"
         >
+        @if (isSearchOpen) {
+          <div id="club-search-results-desktop" class="club-search-results" role="listbox">
+            @if (isLoadingMovies) {
+              <p class="club-search-results__state">Cargando películas...</p>
+            } @else if (searchError) {
+              <p class="club-search-results__state" role="alert">No se pudo realizar la búsqueda.</p>
+            } @else if (searchResults.length === 0) {
+              <p class="club-search-results__state">No se encontraron películas.</p>
+            } @else {
+              @for (movie of searchResults; track movie.id_pelicula; let index = $index) {
+                <button
+                  class="club-search-result"
+                  type="button"
+                  role="option"
+                  [class.club-search-result--active]="selectedIndex === index"
+                  [attr.aria-selected]="selectedIndex === index"
+                  (click)="selectMovie(movie)"
+                >
+                  <img
+                    class="club-search-result__poster"
+                    [src]="movie.imageUrl"
+                    [alt]="'Póster de ' + movie.titulo"
+                    (error)="onPosterError($event, movie)"
+                  >
+                  <span class="club-search-result__content">
+                    <span class="club-search-result__title">{{ movie.titulo }}</span>
+                    <span class="club-search-result__meta">{{ movie.director }} · {{ movie.anio }}</span>
+                  </span>
+                </button>
+              }
+            }
+          </div>
+        }
       </form>
 
       <a
@@ -143,7 +185,8 @@
         <button type="button" aria-label="Cerrar menú del club" (click)="closeDrawer()">×</button>
       </header>
 
-      <form class="club-search club-search--drawer" role="search" (submit)="$event.preventDefault()">
+      <form class="club-search club-search--drawer" role="search" (submit)="onSearchEnter($event)">
+        <label class="club-search__label" for="club-search-drawer">Buscar películas</label>
         <svg
           class="club-search__icon"
           viewBox="0 0 24 24"
@@ -160,11 +203,52 @@
           />
         </svg>
         <input
+          id="club-search-drawer"
           class="club-search__input"
           type="search"
-          placeholder="Buscar películas"
+          placeholder="Buscar películas…"
           aria-label="Buscar películas"
+          autocomplete="off"
+          [value]="searchTerm"
+          [attr.aria-expanded]="isSearchOpen"
+          aria-controls="club-search-results-drawer"
+          (input)="onSearchInput($event)"
+          (focus)="onSearchFocus()"
+          (keydown)="onSearchKeydown($event)"
         >
+        @if (isSearchOpen) {
+          <div id="club-search-results-drawer" class="club-search-results" role="listbox">
+            @if (isLoadingMovies) {
+              <p class="club-search-results__state">Cargando películas...</p>
+            } @else if (searchError) {
+              <p class="club-search-results__state" role="alert">No se pudo realizar la búsqueda.</p>
+            } @else if (searchResults.length === 0) {
+              <p class="club-search-results__state">No se encontraron películas.</p>
+            } @else {
+              @for (movie of searchResults; track movie.id_pelicula; let index = $index) {
+                <button
+                  class="club-search-result"
+                  type="button"
+                  role="option"
+                  [class.club-search-result--active]="selectedIndex === index"
+                  [attr.aria-selected]="selectedIndex === index"
+                  (click)="selectMovie(movie)"
+                >
+                  <img
+                    class="club-search-result__poster"
+                    [src]="movie.imageUrl"
+                    [alt]="'Póster de ' + movie.titulo"
+                    (error)="onPosterError($event, movie)"
+                  >
+                  <span class="club-search-result__content">
+                    <span class="club-search-result__title">{{ movie.titulo }}</span>
+                    <span class="club-search-result__meta">{{ movie.director }} · {{ movie.anio }}</span>
+                  </span>
+                </button>
+              }
+            }
+          </div>
+        }
       </form>
 
       <nav class="club-drawer__links" aria-label="Secciones del club">
