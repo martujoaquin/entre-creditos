@@ -397,6 +397,15 @@ try {
     }
 
     if (($_GET['resource'] ?? '') === 'resenas') {
+        if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['scope'] ?? '') === 'landing') {
+            $resena = new Resena($conexion);
+            $pelicula = new Pelicula($conexion);
+            $controller = new ResenaController($resena, $pelicula);
+
+            echo json_encode($controller->listarLanding());
+            exit;
+        }
+
         if ($_SERVER['REQUEST_METHOD'] === 'GET' && ($_GET['scope'] ?? '') === 'admin') {
             $error = RequireAdmin::verificar();
 

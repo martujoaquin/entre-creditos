@@ -60,6 +60,37 @@ class Resena
         return array_map([$this, 'formatearResenaAdmin'], $consulta->fetchAll());
     }
 
+    public function obtenerUltimasLanding(int $limite = 3): array
+    {
+        $sql = "SELECT
+                    r.id_resena,
+                    r.frase_destacada,
+                    r.contenido,
+                    r.puntuacion,
+                    r.fecha_creacion,
+                    u.id_usuario,
+                    u.nombre_completo,
+                    u.avatar,
+                    p.id_pelicula,
+                    p.titulo,
+                    p.director,
+                    p.anio,
+                    p.imagen
+                FROM resenas r
+                INNER JOIN usuarios u ON u.id_usuario = r.id_usuario
+                INNER JOIN peliculas p ON p.id_pelicula = r.id_pelicula
+                WHERE p.activo = 1
+                AND u.activo = 1
+                ORDER BY r.fecha_creacion DESC, r.id_resena DESC
+                LIMIT :limite";
+
+        $consulta = $this->conexion->prepare($sql);
+        $consulta->bindValue(':limite', $limite, PDO::PARAM_INT);
+        $consulta->execute();
+
+        return array_map([$this, 'formatearResenaLanding'], $consulta->fetchAll());
+    }
+
     public function create(int $userId, int $movieId, array $data): array
     {
         $sql = "INSERT INTO resenas (
@@ -206,6 +237,29 @@ class Resena
                 'titulo' => $resena['titulo'],
                 'imagen' => $resena['imagen'],
                 'activo' => (int) $resena['activo']
+            ]
+        ];
+    }
+
+    private function formatearResenaLanding(array $resena): array
+    {
+        return [
+            'id_resena' => (int) $resena['id_resena'],
+            'frase_destacada' => $resena['frase_destacada'],
+            'contenido' => $resena['contenido'],
+            'puntuacion' => (int) $resena['puntuacion'],
+            'fecha_creacion' => $resena['fecha_creacion'],
+            'autor' => [
+                'id_usuario' => (int) $resena['id_usuario'],
+                'nombre_completo' => $resena['nombre_completo'],
+                'avatar' => $resena['avatar']
+            ],
+            'pelicula' => [
+                'id_pelicula' => (int) $resena['id_pelicula'],
+                'titulo' => $resena['titulo'],
+                'director' => $resena['director'],
+                'anio' => (int) $resena['anio'],
+                'imagen' => $resena['imagen']
             ]
         ];
     }
