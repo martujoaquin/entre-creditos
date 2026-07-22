@@ -252,10 +252,6 @@ h3 span {
   border-radius: 12px;
 }
 
-:host(.shared-review-card) .review-image .rating-badge {
-  display: none;
-}
-
 :host(.shared-review-card) .review-body {
   padding: 22px 26px 20px;
 }
@@ -352,6 +348,16 @@ h3 span {
   padding-top: 12px;
 }
 
+.review--my-reviews {
+  min-height: 0;
+}
+
+.my-reviews-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 24px;
+}
+
 .review--movie-detail .rating-badge {
   position: static;
   width: fit-content;
@@ -382,12 +388,23 @@ h3 span {
   min-height: 0;
   margin: 14px 0 0;
   overflow: visible;
-  font-size: 1.45rem;
+  font-size: 1.32rem;
   line-height: 1.24;
   -webkit-line-clamp: initial;
 }
 
-.review--movie-detail .fragment {
+.review--my-reviews .review-quote {
+  display: block;
+  min-height: 0;
+  margin: 14px 0 0;
+  overflow: visible;
+  font-size: 1.25rem;
+  line-height: 1.24;
+  -webkit-line-clamp: initial;
+}
+
+.review--movie-detail .fragment,
+.review--my-reviews .fragment {
   display: block;
   min-height: 0;
   margin: 8px 0 0;
@@ -396,7 +413,8 @@ h3 span {
   -webkit-line-clamp: initial;
 }
 
-.review--movie-detail .fragment--collapsed {
+.review--movie-detail .fragment--collapsed,
+.review--my-reviews .fragment--collapsed {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
@@ -546,6 +564,11 @@ h3 span {
     align-items: flex-start;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .my-reviews-header {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
 
   .review-footer time {

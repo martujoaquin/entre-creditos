@@ -4,6 +4,8 @@
 
 .shared-page__header {
   max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .shared-page__header p:last-child,

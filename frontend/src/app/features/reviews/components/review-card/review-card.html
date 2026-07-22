@@ -2,8 +2,9 @@
   class="review"
   [class.review--movie-detail]="isMovieDetail"
   [class.review--home]="isHome"
+  [class.review--my-reviews]="isMyReviews"
 >
-  @if (!isMovieDetail && review.movie) {
+  @if (!isMovieDetail && !isMyReviews && review.movie) {
     <div class="review-image">
       <button
         class="review-image__button"
@@ -19,15 +20,40 @@
           >
         }
       </button>
-      <div class="rating-badge" [attr.aria-label]="'Puntuación: ' + review.rating + ' sobre 5'">
-        <span class="clapper-icon" aria-hidden="true"></span>
-        <span>{{ review.rating }}/5</span>
-      </div>
     </div>
   }
 
   <div class="review-body">
-    @if (!isMovieDetail && review.movie) {
+    @if (isMyReviews && review.movie) {
+      <div class="my-reviews-header">
+        <div class="my-reviews-movie-info" style="min-width: 0;">
+          <span
+            class="my-reviews-movie-eyebrow"
+            style="display: block; margin: 0 0 7px; color: var(--color-primary); font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase;"
+          >Película</span>
+          <h3><button class="my-reviews-movie-title" type="button" (click)="onMovieSelected()">{{ review.movie.title }}</button></h3>
+          <p class="my-reviews-movie-meta">{{ review.movie.director }} · {{ review.movie.year }}</p>
+          @if (review.createdAt) {
+            <time
+              class="my-reviews-date"
+              [attr.datetime]="review.createdAt"
+              style="display: block; margin: 7px 0 0; color: var(--color-text-disabled); font-size: 13px;"
+            >{{ review.createdAt | date: 'dd/MM/yyyy' }}</time>
+          }
+        </div>
+
+        <div
+          class="my-reviews-rating"
+          [attr.aria-label]="'Puntuación: ' + review.rating + ' sobre 5'"
+          style="position: static; display: inline-flex; align-items: center; gap: 6px; width: fit-content; min-height: 30px; padding: 0 10px; border: 1px solid rgba(74, 141, 255, 0.38); border-radius: var(--radius-button); background: rgba(74, 141, 255, 0.1); color: var(--color-primary-hover); font-size: 12px; font-weight: 700;"
+        >
+          <span class="clapper-icon" aria-hidden="true"></span>
+          <span>{{ review.rating }}/5</span>
+        </div>
+      </div>
+
+      <div class="movie-rule" aria-hidden="true"></div>
+    } @else if (!isMovieDetail && review.movie) {
       <header class="review-header">
         <h3 class="review-title">
           <button type="button" (click)="onMovieSelected()">{{ review.movie.title }}</button>
@@ -79,24 +105,26 @@
       </div>
     }
 
-    <footer class="review-footer">
-      <div class="review-author">
-        @if (avatarUrl) {
-          <img
-            [src]="avatarUrl"
-            [alt]="'Avatar de ' + review.author.name"
-            (error)="onAvatarError()"
-          >
-        } @else {
-          <span aria-hidden="true">{{ authorInitial }}</span>
-        }
-        <p>{{ review.author.name }}</p>
-      </div>
+    @if (!isMyReviews) {
+      <footer class="review-footer">
+        <div class="review-author">
+          @if (avatarUrl) {
+            <img
+              [src]="avatarUrl"
+              [alt]="'Avatar de ' + review.author.name"
+              (error)="onAvatarError()"
+            >
+          } @else {
+            <span aria-hidden="true">{{ authorInitial }}</span>
+          }
+          <p>{{ review.author.name }}</p>
+        </div>
 
-      @if ((isMovieDetail || isHome) && review.createdAt) {
-        <time [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'dd/MM/yyyy' }}</time>
-      }
-    </footer>
+        @if ((isMovieDetail || isHome) && review.createdAt) {
+          <time [attr.datetime]="review.createdAt">{{ review.createdAt | date: 'dd/MM/yyyy' }}</time>
+        }
+      </footer>
+    }
 
     @if (showActions) {
       <div class="review-actions" [class.review-actions--own]="isOwnReview" aria-label="Acciones de reseña">
